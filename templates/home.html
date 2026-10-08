@@ -1,0 +1,73 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="icon" href="{% static 'images/favicon.svg' %}" type="image/svg+xml">
+    <meta name="description" content="Sorry ❤️ — turn an honest apology into a moment she'll remember.">
+    <title>Sorry ❤️ — Make Her Smile Again</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/style.css' %}">
+</head>
+<body>
+    <div class="ambient ambient-one"></div>
+    <div class="ambient ambient-two"></div>
+    <div class="hearts" aria-hidden="true">
+        <span class="heart heart-one">♡</span><span class="heart heart-two">♥</span>
+        <span class="heart heart-three">♡</span><span class="heart heart-four">♥</span>
+        <span class="heart heart-five">♡</span>
+    </div>
+    <header class="site-header">
+        <a class="brand" href="{% url 'sorry:home' %}"><span>♡</span> Sorry</a>
+        <a class="header-link" href="#how-it-works">How it works</a>
+    </header>
+    <main>
+        <section class="hero section-shell">
+            <div class="hero-copy">
+                <p class="eyebrow">A little love goes a long way</p>
+                <h1>Make Her<br><em>Smile Again</em> <span>❤️</span></h1>
+                <p class="hero-subtitle">Sometimes a simple Sorry isn't enough.</p>
+                <p class="hero-description">Say what you mean, remember what matters, and make your apology a moment she can feel.</p>
+                <a class="button button-primary" href="{% url 'sorry:create' %}">Create My Sorry Page <span>🥺</span></a>
+            </div>
+            <div class="hero-card glass-card">
+                <div class="card-topline"><span class="status-dot"></span> made with a little courage</div>
+                <div class="envelope">💌</div>
+                <p class="card-quote">“I know I hurt you.<br>And I want to make it right.”</p>
+                <div class="card-signature">with love, always <span>♡</span></div>
+            </div>
+        </section>
+        <section class="process section-shell" id="how-it-works">
+            <div class="section-heading">
+                <p class="eyebrow">A better way to say it</p>
+                <h2>Small steps. <em>Big feelings.</em></h2>
+                <p>Make something personal in just a few heartfelt moments.</p>
+            </div>
+            <div class="steps">
+                <div class="step"><span class="step-number">01</span><h3>Start with honesty</h3><p>Open your heart and say the things that are hard to say out loud.</p></div>
+                <div class="step"><span class="step-number">02</span><h3>Make it yours</h3><p>Turn your words and favorite memories into something uniquely you.</p></div>
+                <div class="step"><span class="step-number">03</span><h3>Send the love</h3><p>Share your little page and give her a reason to smile again.</p></div>
+            </div>
+        </section>
+        <section class="features section-shell">
+            <div class="feature-card glass-card"><span class="feature-icon">💌</span><h3>Add your message</h3><p>Tell her what you really feel, in your own words.</p></div>
+            <div class="feature-card glass-card"><span class="feature-icon">📸</span><h3>Add your memories</h3><p>Bring back the moments that make your story special.</p></div>
+            <div class="feature-card glass-card"><span class="feature-icon">❤️</span><h3>Share your Sorry</h3><p>Send a beautiful little reminder of how much you care.</p></div>
+        </section>
+        <section class="final-cta section-shell glass-card">
+            <p class="eyebrow">It starts with one little word</p>
+            <h2>Ready to make her smile?</h2>
+            <p>Because sometimes, love deserves more than a text.</p>
+            <a class="button button-primary" href="{% url 'sorry:create' %}">Create My Sorry Page <span>🥺</span></a>
+        </section>
+    </main>
+    <footer class="site-footer">
+        <a class="brand" href="{% url 'sorry:home' %}"><span>♡</span> Sorry</a>
+        <p>Made for the moments that matter. <span>❤️</span></p>
+    </footer>
+    <script src="{% static 'js/main.js' %}"></script>
+</body>
+</html>

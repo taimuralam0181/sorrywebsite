@@ -1,0 +1,143 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>A little something for {{ page.her_name|default:"you" }} ❤️</title>
+    <meta name="description" content="Someone made a special surprise for you. Open it when you're ready. ❤️">
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="canonical" href="{{ public_url }}">
+    <meta property="og:title" content="A little something for {{ page.her_name|default:'you' }} ❤️">
+    <meta property="og:description" content="Someone made a special surprise for you. Open it when you're ready. ❤️">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="{{ public_url }}">
+    <meta property="og:image" content="{{ share_image_url }}">
+    <meta property="og:image:width" content="1200">
+    <meta property="og:image:height" content="630">
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="A little something for {{ page.her_name|default:'you' }} ❤️">
+    <meta name="twitter:description" content="Someone made a special surprise for you. Open it when you're ready. ❤️">
+    <meta name="twitter:image" content="{{ share_image_url }}">
+    <link rel="icon" href="{% static 'images/favicon.svg' %}" type="image/svg+xml">
+    <link rel="stylesheet" href="{% static 'css/public-page.css' %}">
+</head>
+<body data-theme="{{ page.theme|default:'romantic' }}" data-recipient="{{ page.her_name|default:'Someone special' }}">
+    <div class="public-hearts" aria-hidden="true"><span>♡</span><span>♥</span><span>♡</span><span>♥</span></div>
+    <main class="surprise-page">
+        <section class="opening-scene" id="opening-scene">
+            <div class="hero-heart">♡</div>
+            <p class="opening-intro">I have something to tell you...</p>
+            <div class="opening-envelope" aria-hidden="true"><span class="envelope-flap"></span><span class="envelope-heart">♥</span></div>
+            <p class="envelope-label">Open when you're ready ❤️</p>
+            <button class="surprise-button" id="open-surprise" type="button">Open My Letter 💌</button>
+        </section>
+        <div id="surprise-content" class="surprise-content" aria-hidden="true">
+            <section class="surprise-hero reveal">
+                <div class="hero-heart">♡</div>
+                <p class="public-kicker">A little surprise for you</p>
+                <h1>Hi {{ page.her_name|default:"Someone special" }}... <span>❤️</span></h1>
+                <p>I have something<br>to tell you.</p>
+                <span class="scroll-cue" aria-hidden="true">↓</span>
+            </section>
+            {% if gallery_photos %}
+                <section class="public-section gallery-section reveal" id="memory-gallery">
+                    <p class="public-kicker">A few moments I never want to forget.</p>
+                    <h2>Our Memories ❤️</h2>
+                    <div class="gallery-stage">
+                        <button class="gallery-arrow gallery-prev" type="button" aria-label="Previous memory">←</button>
+                        <div class="gallery-image-wrap"><span class="loading-indicator" aria-label="Loading memory"></span>
+                            {% for photo in gallery_photos %}<img class="gallery-image{% if not forloop.first %} is-hidden{% endif %}" data-index="{{ forloop.counter0 }}" data-caption="{{ photo.caption }}" src="{{ photo.url }}" alt="{{ photo.alt }}" {% if not forloop.first %}loading="lazy"{% endif %}>{% endfor %}
+                        </div>
+                        <button class="gallery-arrow gallery-next" type="button" aria-label="Next memory">→</button>
+                    </div>
+                    <p class="gallery-caption"></p>
+                    <div class="gallery-dots" role="tablist" aria-label="Memory photos">
+                        {% for photo in gallery_photos %}<button type="button" role="tab" aria-label="Show memory {{ forloop.counter }}" data-index="{{ forloop.counter0 }}"{% if forloop.first %} aria-selected="true"{% endif %}></button>{% endfor %}
+                    </div>
+                </section>
+            {% endif %}
+            <section class="typewriter-section reveal" aria-live="polite"><p id="typewriter-text"></p><span class="typewriter-cursor" aria-hidden="true">|</span></section>
+            <section class="public-section message-section reveal"><span class="section-icon">💌</span><p>{{ page.sorry_message|linebreaksbr }}</p></section>
+            <section class="sorry-things reveal">
+                <p class="public-kicker">From the bottom of my heart</p><h2>Things I'm Sorry For…</h2>
+                <div class="sorry-things-grid">
+                    <article><span>❤️</span><p>For making you upset.</p></article>
+                    <article><span>🥺</span><p>For not listening properly.</p></article>
+                    <article><span>💔</span><p>For being stubborn sometimes.</p></article>
+                </div>
+            </section>
+            {% if sorry_video %}
+                <section class="public-section video-section reveal">
+                    <div class="video-heading">
+                        <p class="public-kicker">A message from my heart</p>
+                        <h2>🎥 I Made This For You ❤️</h2>
+                        <p class="video-intro">I couldn't say everything in words...<br>So I made this for you.</p>
+                    </div>
+                    <div class="video-card">
+                        <p class="video-ready">Whenever you're ready... ❤️</p>
+                        <div class="video-frame"><span class="loading-indicator" aria-label="Loading video"></span><video class="dual-video" controls preload="metadata" playsinline aria-label="Personal sorry video" src="{{ sorry_video.url }}"></video></div>
+                        <div class="video-complete" aria-live="polite" hidden><strong>I really hope you know how sorry I am. ❤️</strong><span>I mean every word.</span></div>
+                    </div>
+                </section>
+            {% endif %}
+            {% if memory_video %}
+                <section class="public-section video-section reveal">
+                    <div class="video-heading">
+                        <p class="public-kicker">Memories worth keeping</p>
+                        <h2>🎞️ Our Memories ❤️</h2>
+                        <p class="video-intro">A little collection of moments I'll always remember.</p>
+                    </div>
+                    <div class="video-card">
+                        <p class="video-ready">Whenever you're ready... ❤️</p>
+                        <div class="video-frame"><span class="loading-indicator" aria-label="Loading video"></span><video class="dual-video" controls preload="metadata" playsinline aria-label="Our memories video" src="{{ memory_video.url }}"></video></div>
+                        <div class="video-complete" aria-live="polite" hidden><strong>These moments mean more to me than you know. ❤️</strong></div>
+                    </div>
+                </section>
+            {% endif %}
+            {% if people_messages %}
+                <section class="people-messages-section reveal">
+                    <p class="public-kicker">A little love from the people around you</p>
+                    <h2>💌 Messages From Your People ❤️</h2>
+                    <p class="people-messages-intro">They want to help you smile again.</p>
+                    <div class="people-message-list">
+                        {% for message in people_messages %}
+                            <article class="video-section people-message-item">
+                                <h3>{% if message.is_baby %}👶 A Little Message From Baby ❤️{% else %}{{ message.name }}{% endif %}</h3>
+                                {% if not message.is_baby %}<p class="people-relationship">{{ message.relationship }}</p>{% endif %}
+                                <div class="video-card">
+                                    <p class="video-ready">Whenever you're ready... ❤️</p>
+                                    <div class="video-frame"><span class="loading-indicator" aria-label="Loading message video"></span><video class="dual-video" controls preload="metadata" playsinline aria-label="Message from {{ message.name }}" src="{{ message.video.url }}"></video></div>
+                                </div>
+                            </article>
+                        {% endfor %}
+                    </div>
+                </section>
+            {% endif %}
+            {% if page.letter_title or page.letter_body %}
+                <section class="public-section letter-section reveal">
+                    <div id="public-letter" class="public-letter is-closed">
+                        <button id="open-letter" class="letter-cover" type="button"><span>💌</span><b>A letter for you</b><small>Open My Letter</small></button>
+                        <article class="letter-inside"><p class="letter-label">From my heart</p><h2>{{ page.letter_title }}</h2><p>{{ page.letter_body|linebreaksbr }}</p><strong>{{ page.signature }}</strong></article>
+                    </div>
+                </section>
+            {% endif %}
+            <section class="emotional-pause reveal"><p>Take your time...</p><span>❤️</span><h2>There's just one thing I want to ask you...</h2><button id="continue-button" type="button">Continue →</button></section>
+            <section class="public-section forgiveness-section reveal" id="forgiveness">
+                <p class="public-kicker">One last little question</p><h2>So...<br>Will you forgive me? 🥺❤️</h2>
+                <div class="forgive-actions"><button id="yes-button" type="button">Yes ❤️</button><button id="angry-button" type="button">Still Angry 😤</button></div>
+                <div id="forgive-result" class="forgive-result" aria-live="polite"></div>
+                <button id="try-again" class="try-again" type="button">Try Again ❤️</button>
+            </section>
+            <section class="final-message reveal"><p>No matter what, I'm glad I got to tell you how I feel. ❤️</p><strong>— {{ page.your_name|default:"Someone who cares" }}</strong></section>
+        </div>
+    </main>
+    <div class="photo-lightbox" id="photo-lightbox" aria-hidden="true">
+        <button class="lightbox-close" type="button" aria-label="Close fullscreen photo">×</button>
+        <button class="lightbox-arrow lightbox-prev" type="button" aria-label="Previous fullscreen memory">←</button>
+        <img id="lightbox-image" alt="">
+        <button class="lightbox-arrow lightbox-next" type="button" aria-label="Next fullscreen memory">→</button>
+    </div>
+    <script src="{% static 'js/public-page.js' %}"></script>
+</body>
+</html>

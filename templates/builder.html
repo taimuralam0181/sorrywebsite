@@ -1,0 +1,158 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Create a heartfelt Sorry page.">
+    <title>Create your Sorry page ❤️</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600;700&family=Playfair+Display:wght@600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="{% static 'css/builder.css' %}">
+</head>
+<body>
+    <div class="builder-ambient ambient-left"></div>
+    <div class="builder-ambient ambient-right"></div>
+    <header class="builder-header">
+        <a class="builder-brand" href="{% url 'sorry:home' %}"><span>♡</span> Sorry</a>
+        <div class="builder-progress"><span></span><b>Part 1 of 1</b> &nbsp; Your heartfelt page</div>
+        <a class="back-link" href="{% url 'sorry:home' %}">← Back home</a>
+    </header>
+
+    <main class="builder-layout">
+        <form class="editor-panel" aria-label="Sorry page editor" method="post" enctype="multipart/form-data">
+            {% csrf_token %}
+            <div class="editor-heading">
+                <p class="builder-eyebrow">Your little love letter</p>
+                <h1>Make it <em>personal.</em></h1>
+                <p>Fill in the details below and watch your page come to life.</p>
+                {% if form.errors %}
+                    <div class="form-errors" role="alert">
+                        <strong>Please check the highlighted details.</strong>
+                        {{ form.non_field_errors }}
+                        {% for field in form %}
+                            {% for error in field.errors %}<span>{{ field.label }}: {{ error }}</span>{% endfor %}
+                        {% endfor %}
+                    </div>
+                {% endif %}
+            </div>
+
+            <div class="control-card">
+                <div class="card-heading"><span class="card-number">01</span><div><h2>Who are you saying Sorry to? <span>❤️</span></h2><p>Let's start with the two people who matter most.</p></div></div>
+                <div class="input-grid">
+                    <label>Her Name<input id="her-name" name="her_name" type="text" placeholder="Enter her name..." autocomplete="off" required></label>
+                    <label>Your Name<input id="your-name" name="your_name" type="text" placeholder="Enter your name..." autocomplete="off" required></label>
+                </div>
+            </div>
+
+            <div class="control-card">
+                <div class="card-heading"><span class="card-number">02</span><div><h2>Choose a feeling <span>✨</span></h2><p>Pick the mood that feels most like your story.</p></div></div>
+                <div class="theme-grid">
+                    <button class="theme-option active" type="button" data-theme="romantic"><span class="theme-swatch romantic-swatch">❤️</span><span><b>Romantic</b><small>Soft & passionate</small></span><i>✓</i></button>
+                    <button class="theme-option" type="button" data-theme="cute"><span class="theme-swatch cute-swatch">🌸</span><span><b>Cute</b><small>Sweet & playful</small></span><i>✓</i></button>
+                    <button class="theme-option" type="button" data-theme="dark"><span class="theme-swatch dark-swatch">🌙</span><span><b>Dark Love</b><small>Deep & mysterious</small></span><i>✓</i></button>
+                    <button class="theme-option" type="button" data-theme="emotional"><span class="theme-swatch emotional-swatch">🥺</span><span><b>Emotional</b><small>Quiet & heartfelt</small></span><i>✓</i></button>
+                </div>
+                <input id="theme-input" name="theme" type="hidden" value="romantic">
+            </div>
+
+            <div class="control-card">
+                <div class="card-heading"><span class="card-number">03</span><div><h2>Your Sorry Message <span>💌</span></h2><p>Say what is in your heart, just as you would say it to her.</p></div></div>
+                <label class="full-label">Your message<textarea id="sorry-message" name="sorry_message" rows="4" placeholder="Write something from your heart..." required>আমি জানি তুমি আমার উপর রাগ করে আছো। আমি সত্যিই sorry। 🥺❤️</textarea></label>
+            </div>
+
+            <div class="control-card">
+                <div class="card-heading"><span class="card-number">04</span><div><h2>Write a Letter <span>💌</span></h2><p>A few more words can say everything.</p></div></div>
+                <label class="full-label">Letter title<input id="letter-title" name="letter_title" type="text" placeholder="I'm Sorry 🥺" value="I'm Sorry 🥺"></label>
+                <label class="full-label">Letter message<textarea id="letter-message" name="letter_body" rows="6" placeholder="Write your heart out..."></textarea></label>
+                <label class="full-label">Signature<input id="signature" name="signature" type="text" placeholder="— Your Name ❤️"></label>
+            </div>
+
+            <div class="control-card">
+                <div class="card-heading"><span class="card-number">05</span><div><h2>Our Memories <span>📸</span></h2><p>Add up to 5 photos ❤️</p></div></div>
+                <div class="upload-row">
+                    <label class="upload-box" for="photo-input"><span>📸</span><b>Choose photos</b><small>JPG, PNG or WEBP · max 5</small><input id="photo-input" name="photos" type="file" accept=".jpg,.jpeg,.png,.webp,image/*" multiple></label>
+                    <button id="remove-photo" class="remove-button hidden" type="button">Remove photo</button>
+                </div>
+                <p id="photo-name" class="file-name">0 / 5 photos selected</p>
+                <div id="photo-thumbnails" class="photo-thumbnails" aria-live="polite"></div>
+                <label class="full-label media-caption-field">Photo caption<input id="photo-caption" name="photo_caption" type="text" placeholder="A moment worth remembering 📸"></label>
+            </div>
+
+            <div class="control-card">
+                <div class="card-heading"><span class="card-number">06</span><div><h2>Add your videos <span>🎥</span></h2><p>Two personal ways to share what is in your heart.</p></div></div>
+                <div class="video-upload-grid">
+                    <div class="video-upload-card">
+                        <h3>🎥 I Made This For You ❤️</h3><p>Record or upload a personal Sorry video just for her.</p>
+                        <label class="upload-box" for="sorry-video-input"><span>🎥</span><b>Sorry Video</b><small>MP4 or WEBM · max 50 MB</small><input id="sorry-video-input" name="sorry_video" type="file" accept=".mp4,.webm,video/mp4,video/webm"></label>
+                        <p id="sorry-video-name" class="file-name"></p><p id="sorry-video-error" class="upload-error" role="alert"></p>
+                    </div>
+                    <div class="video-upload-card">
+                        <h3>🎞️ Our Memories ❤️</h3><p>Upload a video of your favorite memories together.</p>
+                        <label class="upload-box" for="memory-video-input"><span>🎞️</span><b>Memories Video</b><small>MP4 or WEBM · max 50 MB</small><input id="memory-video-input" name="memory_video" type="file" accept=".mp4,.webm,video/mp4,video/webm"></label>
+                        <p id="memory-video-name" class="file-name"></p><p id="memory-video-error" class="upload-error" role="alert"></p>
+                    </div>
+                </div>
+            </div>
+
+            <div class="control-card people-messages-card">
+                <div class="card-heading"><span class="card-number">07</span><div><h2>Messages From Your People <span>💌</span></h2><p>Sometimes an apology is better when the people around you say it too. ❤️</p></div></div>
+                <p class="people-prompt">Select who wants to send a message:</p>
+                <div class="relationship-grid">
+                    {% for relationship in people_relationships %}
+                        <label class="relationship-option"><input type="checkbox" name="people_relationship" value="{{ relationship }}" data-relationship="{{ relationship }}"><span>{{ relationship }}</span></label>
+                    {% endfor %}
+                </div>
+                <div id="people-message-fields" class="people-message-fields" aria-live="polite"></div>
+            </div>
+
+            <div class="editor-actions">
+                <button id="reset-builder" class="button button-quiet" type="button">Reset</button>
+                <button id="preview-builder" class="button button-primary" type="button">Preview 👀</button>
+                <button class="button button-submit" type="submit">Create My Sorry Page ❤️</button>
+            </div>
+        </form>
+
+        <aside class="preview-panel" id="live-preview" aria-label="Live mobile preview">
+            <div class="preview-heading"><div><p class="builder-eyebrow">Live preview</p><h2>Her little surprise</h2></div><span class="live-dot">● Live</span></div>
+            <div class="phone-frame">
+                <div class="phone-speaker"></div>
+                <div class="phone-screen" id="phone-screen" data-theme="romantic">
+                    <div class="preview-glow"></div>
+                    <div class="preview-content">
+                        <div class="preview-status"><span>9:41</span><span>♡ ᯤ ▰</span></div>
+                        <div class="preview-heart">♡</div>
+                        <p class="preview-kicker">A message for you</p>
+                            <h3>Hi <span id="preview-name">Beautiful</span> <span class="name-heart">❤️</span></h3>
+                            <p class="preview-intro">I have something to tell you...</p>
+                            <div class="preview-divider">✦</div>
+                            <div id="preview-photo-wrap" class="preview-media photo-placeholder"><img id="preview-photo" alt="Your selected memory"><span>📸<br><b>Your memory will appear here</b></span></div>
+                            <p id="preview-photo-caption" class="media-caption">A moment worth remembering 📸</p>
+                            <div id="preview-video-wrap" class="preview-media preview-video video-placeholder"><video id="preview-video" controls></video><span>🎥<br><b>Your video will appear here</b></span></div>
+                            <div class="preview-message"><span>💌</span><p id="preview-message">আমি জানি তুমি আমার উপর রাগ করে আছো। আমি সত্যিই sorry। 🥺❤️</p></div>
+                            <div id="letter-card" class="letter-card is-closed">
+                                <button id="open-letter" class="envelope-cover" type="button"><span class="envelope-icon">💌</span><b>Open My Letter 💌</b><small>A little something from my heart</small></button>
+                                <article class="preview-letter">
+                                    <p class="letter-label">A letter from my heart</p>
+                                    <h4 id="preview-letter-title">I'm Sorry 🥺</h4>
+                                    <p id="preview-letter-message" class="letter-body">Write your heart out...</p>
+                                    <p id="preview-signature" class="letter-signature">— Your Name ❤️</p>
+                                </article>
+                            </div>
+                            <div class="forgive-prompt">Will you forgive me? 🥺</div>
+                            <div class="forgive-actions">
+                                <button id="forgive-yes" class="forgive-button yes-button" type="button">Yes ❤️</button>
+                                <button id="forgive-angry" class="forgive-button angry-button" type="button">Still Angry 😤</button>
+                            </div>
+                            <p id="forgive-response" class="forgive-response" aria-live="polite"></p>
+                    </div>
+                </div>
+                <div class="phone-home-indicator"></div>
+            </div>
+            <p class="preview-note">Your changes appear here instantly ✨</p>
+        </aside>
+    </main>
+    <script src="{% static 'js/builder.js' %}"></script>
+</body>
+</html>

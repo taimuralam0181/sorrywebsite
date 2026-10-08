@@ -1,0 +1,30 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Sorry Page is Ready 🎉</title>
+    <link rel="icon" href="{% static 'images/favicon.svg' %}" type="image/svg+xml">
+    <link rel="stylesheet" href="{% static 'css/published.css' %}">
+</head>
+<body class="success-page">
+    <main class="success-card">
+        <div class="success-icon">🎉</div>
+        <p class="public-eyebrow">A little courage goes a long way</p>
+        <h1>Your Sorry Page is Ready!</h1>
+        <p>Your page is ready to share with her. ❤️</p>
+        <div class="share-link-card">
+            <span id="share-url">{{ public_url }}</span>
+            <button id="copy-link" type="button">Copy Link 🔗</button>
+        </div>
+        <p id="copy-status" class="copy-status" aria-live="polite"></p>
+        <div class="success-actions">
+            <a class="whatsapp-action" target="_blank" rel="noopener" href="https://wa.me/?text=I%20made%20something%20for%20you%20%E2%9D%A4%EF%B8%8F%20Open%20this%3A%20{{ public_url|urlencode }}">Share on WhatsApp 💚</a>
+            <button class="native-share-action" id="native-share" type="button">Share ❤️</button>
+            <a class="open-action" href="{% url 'sorry:public' page.slug %}">Open Page 👀</a>
+        </div>
+    </main>
+    <script src="{% static 'js/published.js' %}"></script>
+</body>
+</html>

@@ -1,0 +1,32 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Your Sorry Page Preview ❤️</title>
+    <link rel="stylesheet" href="{% static 'css/published.css' %}">
+</head>
+<body class="preview-page">
+    <main class="saved-preview">
+        <p class="public-eyebrow">Your page is saved</p>
+        <h1>Look what you made for <em>{{ page.her_name }}</em> ❤️</h1>
+        <p class="saved-copy">This is your private preview. Publish it when your heart says it is ready.</p>
+        <div class="preview-card">
+            <div class="preview-hero-mark">♡</div>
+            <p class="preview-kicker">A message for you</p>
+            <h2>Hi {{ page.her_name }} ❤️</h2>
+            <p class="preview-message">{{ page.sorry_message|linebreaksbr }}</p>
+            {% if page.photo %}<img src="{{ page.photo.url }}" alt="{{ page.photo_caption|default:'A special memory' }}">{% endif %}
+            {% if page.photo_caption %}<p class="preview-caption">{{ page.photo_caption }}</p>{% endif %}
+            {% if page.video %}<video controls src="{{ page.video.url }}"></video>{% endif %}
+            {% if page.letter_title or page.letter_body %}<div class="preview-letter"><h3>{{ page.letter_title }}</h3><p>{{ page.letter_body|linebreaksbr }}</p><strong>{{ page.signature }}</strong></div>{% endif %}
+        </div>
+        <form method="post" action="{% url 'sorry:publish' page.slug %}">
+            {% csrf_token %}
+            <button class="publish-button" type="submit">Publish My Sorry ❤️</button>
+        </form>
+        <a class="edit-link" href="{% url 'sorry:create' %}">← Create another page</a>
+    </main>
+</body>
+</html>

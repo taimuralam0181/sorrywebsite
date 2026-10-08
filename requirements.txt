@@ -1,0 +1,6 @@
+flask
+requests
+torch
+transformers
+pillow
+django
