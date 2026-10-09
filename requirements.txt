@@ -1,6 +1,2 @@
-flask
-requests
-torch
-transformers
-pillow
-django
+Django==6.1.2
+Pillow==12.2.0

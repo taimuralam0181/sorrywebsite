@@ -103,7 +103,7 @@ textarea { min-height: 95px; resize: vertical; line-height: 1.6; }
 .live-dot { color: #8ee6be; font-size: .67rem; }
 .phone-frame { position: relative; width: min(100%, 336px); padding: 10px; border: 1px solid rgba(255, 255, 255, .2); border-radius: 37px; background: #080811; box-shadow: 0 30px 75px rgba(0, 0, 0, .5), 0 0 0 5px rgba(255, 255, 255, .025); }
 .phone-speaker { position: absolute; z-index: 2; width: 76px; height: 20px; left: 50%; top: 8px; border-radius: 0 0 13px 13px; background: #080811; transform: translateX(-50%); }
-.phone-screen { height: min(720px, 78vh); min-height: 620px; overflow-y: auto; overflow-x: hidden; position: relative; border-radius: 28px; background: #40192c; transition: background .45s; scrollbar-width: thin; scrollbar-color: rgba(255,255,255,.25) transparent; }
+.phone-screen { height: min(720px, calc(100vh - 155px)); min-height: 460px; overflow-y: auto; overflow-x: hidden; position: relative; border-radius: 28px; background: #40192c; transition: background .45s; scrollbar-width: thin; scrollbar-color: rgba(255,255,255,.25) transparent; }
 .phone-screen::-webkit-scrollbar { width: 4px; }
 .phone-screen::-webkit-scrollbar-thumb { border-radius: 8px; background: rgba(255,255,255,.25); }
 .phone-screen[data-theme="cute"] { background: #8f4d6f; }
@@ -130,6 +130,7 @@ textarea { min-height: 95px; resize: vertical; line-height: 1.6; }
 .has-media { display: block; min-height: 0; border-style: solid; animation: media-reveal .5s ease both; }
 .has-media img, .has-media video { display: block; animation: media-zoom .65s ease both; }
 .has-media > span { display: none; }
+.preview-media img[hidden] { display: none; }
 .media-caption { color: rgba(255, 240, 247, .68); margin: 0 0 16px; font: italic .65rem "Playfair Display", Georgia, serif; }
 .preview-message { display: flex; gap: 8px; align-items: start; margin: 15px 0; padding: 13px; border: 1px solid rgba(255, 255, 255, .13); border-radius: 12px; text-align: left; background: rgba(255, 255, 255, .09); }
 .preview-message span { font-size: .86rem; }

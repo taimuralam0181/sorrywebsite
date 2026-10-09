@@ -22,8 +22,22 @@
     let photoUrl = "";
     let galleryUrls = [];
     const videoFields = [
-        { input: $("#sorry-video-input"), name: $("#sorry-video-name"), error: $("#sorry-video-error") },
-        { input: $("#memory-video-input"), name: $("#memory-video-name"), error: $("#memory-video-error") },
+        {
+            input: $("#sorry-video-input"),
+            name: $("#sorry-video-name"),
+            error: $("#sorry-video-error"),
+            preview: $("#preview-sorry-video"),
+            wrap: $("#preview-sorry-video-wrap"),
+            url: "",
+        },
+        {
+            input: $("#memory-video-input"),
+            name: $("#memory-video-name"),
+            error: $("#memory-video-error"),
+            preview: $("#preview-memory-video"),
+            wrap: $("#preview-memory-video-wrap"),
+            url: "",
+        },
     ];
     const peopleFields = $("#people-message-fields");
     const selectedPeople = new Map();
@@ -58,6 +72,7 @@
         galleryUrls = [];
         photoInput.value = "";
         $("#preview-photo").removeAttribute("src");
+        $("#preview-photo").hidden = true;
         $("#preview-photo-wrap").classList.add("photo-placeholder");
         $("#preview-photo-wrap").classList.remove("has-media");
         $("#preview-photo-caption").classList.remove("hidden");
@@ -67,10 +82,18 @@
     }
 
     function clearVideos() {
-        videoFields.forEach(({ input, name, error }) => {
+        videoFields.forEach(({ input, name, error, preview, wrap }, index) => {
+            const field = videoFields[index];
+            if (field.url) URL.revokeObjectURL(field.url);
+            field.url = "";
             input.value = "";
             name.textContent = "";
             error.textContent = "";
+            preview.pause();
+            preview.removeAttribute("src");
+            preview.load();
+            wrap.classList.add("video-placeholder");
+            wrap.classList.remove("has-media");
         });
     }
 
@@ -140,6 +163,7 @@
         galleryUrls = files.map((file) => URL.createObjectURL(file));
         photoUrl = galleryUrls[0];
         $("#preview-photo").src = photoUrl;
+        $("#preview-photo").hidden = false;
         $("#preview-photo-wrap").classList.remove("hidden");
         $("#preview-photo-caption").classList.remove("hidden");
         $("#remove-photo").classList.remove("hidden");
@@ -164,11 +188,19 @@
         $("#preview-photo-wrap").classList.add("has-media");
     });
 
-    videoFields.forEach(({ input, name, error }) => {
+    videoFields.forEach((field) => {
+        const { input, name, error, preview, wrap } = field;
         input.addEventListener("change", () => {
             const file = input.files[0];
+            if (field.url) URL.revokeObjectURL(field.url);
+            field.url = "";
             error.textContent = "";
             name.textContent = "";
+            preview.pause();
+            preview.removeAttribute("src");
+            preview.load();
+            wrap.classList.add("video-placeholder");
+            wrap.classList.remove("has-media");
             if (!file) return;
             const validExtension = /\.(mp4|webm)$/i.test(file.name);
             const validType = ["video/mp4", "video/webm"].includes(file.type);
@@ -177,6 +209,11 @@
                 error.textContent = "Please choose a valid MP4 or WEBM video smaller than 50 MB.";
                 return;
             }
+            field.url = URL.createObjectURL(file);
+            preview.src = field.url;
+            preview.load();
+            wrap.classList.remove("video-placeholder");
+            wrap.classList.add("has-media");
             name.textContent = `✓ ${file.name}`;
         });
     });
