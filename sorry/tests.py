@@ -64,3 +64,12 @@ class SorryPageValidationTests(TestCase):
         self.assertTrue(page.is_published)
         public_response = self.client.get(f"/s/{page.slug}/")
         self.assertEqual(public_response.status_code, 200)
+
+    def test_invalid_form_stays_on_builder_and_preserves_input(self):
+        response = self.client.post(
+            "/create/",
+            {"her_name": "Still entered", "your_name": "", "theme": "romantic", "sorry_message": ""},
+        )
+        self.assertEqual(response.status_code, 200)
+        self.assertContains(response, "Still entered")
+        self.assertContains(response, "Please check the highlighted details.")

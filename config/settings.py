@@ -75,6 +75,19 @@ MEDIA_ROOT = BASE_DIR / "media"
 DEFAULT_AUTO_FIELD = "django.db.models.BigAutoField"
 MESSAGE_STORAGE = "django.contrib.messages.storage.cookie.CookieStorage"
 
+LOGGING = {
+    "version": 1,
+    "disable_existing_loggers": False,
+    "handlers": {"console": {"class": "logging.StreamHandler"}},
+    "loggers": {
+        "sorry": {
+            "handlers": ["console"],
+            "level": "INFO",
+            "propagate": False,
+        },
+    },
+}
+
 if not DEBUG and SECRET_KEY == "django-insecure-local-development-only":
     raise RuntimeError("DJANGO_SECRET_KEY must be set when DJANGO_DEBUG is false.")
 

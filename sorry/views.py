@@ -1,11 +1,16 @@
+import logging
+
 from django import forms
 from django.contrib import messages
+from django.db import DatabaseError
 from django.db import transaction
 from django.shortcuts import get_object_or_404, redirect, render
 from django.urls import resolve, reverse
 
 from .forms import SorryPageForm, validate_image_file, validate_video_file
 from .models import PeopleMessage, SorryPage, SorryPhoto
+
+logger = logging.getLogger(__name__)
 
 PEOPLE_RELATIONSHIPS = ["দেবর", "ননদ", "Cousin", "Friend", "Brother", "Sister", "Mother", "Father", "Family", "Other", "Baby"]
 
@@ -16,6 +21,12 @@ def home(request):
 
 def create_page(request):
     if request.method == "POST":
+        logger.info(
+            "Create submission received: path=%s fields=%d files=%d",
+            request.path,
+            len(request.POST),
+            len(request.FILES),
+        )
         form = SorryPageForm(request.POST, request.FILES)
         gallery_files = request.FILES.getlist("photos")
         gallery_error = None
@@ -78,9 +89,19 @@ def create_page(request):
                     if not page.slug or not preview_url or resolve(preview_url).url_name != "preview":
                         raise ValueError("The preview URL could not be generated.")
                 messages.success(request, "Your page passed validation and was saved successfully.")
+                logger.info("Create submission saved successfully: slug=%s", page.slug)
                 return redirect("sorry:preview", slug=page.slug)
-            except (OSError, ValueError) as error:
-                form.add_error(None, f"Could not save your page safely: {error}")
+            except (DatabaseError, OSError, ValueError) as error:
+                logger.exception("Create submission failed during save or verification")
+                form.add_error(None, "Could not save your page safely. Check the upload and try again.")
+        elif request.method == "POST":
+            logger.warning(
+                "Create submission rejected: form_valid=%s gallery_error=%s people_error=%s errors=%s",
+                form.is_valid(),
+                bool(gallery_error),
+                bool(people_error),
+                form.errors.as_json(),
+            )
         if gallery_error:
             form.add_error(None, gallery_error)
         if people_error:
@@ -101,13 +122,18 @@ def publish_page(request, slug):
         if not _page_is_publishable(page):
             messages.error(request, "This page still needs a valid saved file or required field before publishing.")
             return redirect("sorry:preview", slug=page.slug)
-        page.is_published = True
-        page.save(update_fields=["is_published", "updated_at"])
-        public_url = request.build_absolute_uri(reverse("sorry:public", kwargs={"slug": page.slug}))
-        if not page.is_published or not public_url or resolve(reverse("sorry:public", kwargs={"slug": page.slug})).url_name != "public":
-            messages.error(request, "Publishing could not be verified. Please try again.")
+        try:
+            page.is_published = True
+            page.save(update_fields=["is_published", "updated_at"])
+            public_url = request.build_absolute_uri(reverse("sorry:public", kwargs={"slug": page.slug}))
+            if not page.is_published or not public_url or resolve(reverse("sorry:public", kwargs={"slug": page.slug})).url_name != "public":
+                raise ValueError("The public URL could not be verified.")
+        except (DatabaseError, OSError, ValueError) as error:
+            logger.exception("Publish failed: slug=%s", page.slug)
+            messages.error(request, "Publishing failed. Please try again.")
             return redirect("sorry:preview", slug=page.slug)
         messages.success(request, f"Published successfully: {public_url}")
+        logger.info("Publish succeeded: slug=%s public_url=%s", page.slug, public_url)
         return redirect("sorry:published", slug=page.slug)
     return redirect("sorry:preview", slug=page.slug)
 
