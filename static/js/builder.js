@@ -41,6 +41,9 @@
     ];
     const peopleFields = $("#people-message-fields");
     const selectedPeople = new Map();
+    const statusPanel = $("#validation-status");
+    const builderForm = $("#builder-form");
+    let submissionStarted = false;
 
     const valueOr = (field, fallback) => field.value.trim() || fallback;
 
@@ -54,6 +57,40 @@
             : "— Your Name ❤️";
         $("#preview-signature").textContent = valueOr(fields.signature, defaultSignature);
         $("#preview-photo-caption").textContent = valueOr(fields.photoCaption, "A moment worth remembering 📸");
+        updateValidationStatus();
+    }
+
+    function setCheck(name, state) {
+        const item = document.querySelector(`[data-check="${name}"]`);
+        if (!item) return;
+        item.classList.toggle("is-fail", state === "fail");
+        item.classList.toggle("is-warning", state === "warning");
+        item.querySelector("b").textContent = state === "pass" ? "PASS" : state === "fail" ? "FAIL" : state === "warning" ? "WARNING" : "WAITING";
+    }
+
+    function updateValidationStatus() {
+        const formPass = Boolean(fields.herName.value.trim() && fields.yourName.value.trim() && fields.sorryMessage.value.trim() && $("#theme-input").value);
+        const photos = Array.from(photoInput.files);
+        const photosPass = photos.every((file) => file.size > 0 && /\.(jpg|jpeg|png|webp)$/i.test(file.name) && file.type.startsWith("image/"));
+        const videosPass = videoFields.every(({ input }) => {
+            const file = input.files[0];
+            return !file || (file.size > 0 && /\.(mp4|webm)$/i.test(file.name) && ["video/mp4", "video/webm"].includes(file.type));
+        });
+        const hasOptionalWarning = !photos.length && videoFields.every(({ input }) => !input.files.length);
+        setCheck("form", formPass ? "pass" : "fail");
+        setCheck("photos", photosPass ? (photos.length ? "pass" : "warning") : "fail");
+        setCheck("videos", videosPass ? (hasOptionalWarning ? "warning" : "pass") : "fail");
+        const previewPass = (!photos.length || $("#preview-photo").complete) && videoFields.every(({ input, preview }) => !input.files.length || preview.readyState >= 1);
+        setCheck("preview", previewPass ? (hasOptionalWarning ? "warning" : "pass") : "fail");
+        setCheck("save", "waiting");
+        setCheck("public", "waiting");
+        const blocking = !formPass || !photosPass || !videosPass || !previewPass;
+        const warning = hasOptionalWarning;
+        statusPanel.classList.toggle("status-error", blocking);
+        statusPanel.classList.toggle("status-warning", !blocking && warning);
+        statusPanel.classList.toggle("status-ready", !blocking && !warning);
+        $("#validation-status-title").textContent = blocking ? "🔴 FIX REQUIRED" : warning ? "🟡 CHECK REQUIRED" : "🟢 READY TO PUBLISH";
+        $("#validation-status-summary").textContent = blocking ? "Fix the failed checks before submitting." : warning ? "Optional media can still be added." : "All selected content is ready to validate.";
     }
 
     function setTheme(theme) {
@@ -186,6 +223,9 @@
         });
         $("#preview-photo-wrap").classList.remove("photo-placeholder");
         $("#preview-photo-wrap").classList.add("has-media");
+        $("#preview-photo").onload = updateValidationStatus;
+        $("#preview-photo").onerror = () => { setCheck("preview", "fail"); updateValidationStatus(); };
+        updateValidationStatus();
     });
 
     videoFields.forEach((field) => {
@@ -215,6 +255,9 @@
             wrap.classList.remove("video-placeholder");
             wrap.classList.add("has-media");
             name.textContent = `✓ ${file.name}`;
+            preview.onloadedmetadata = updateValidationStatus;
+            preview.onerror = () => { error.textContent = "This video could not be previewed."; updateValidationStatus(); };
+            updateValidationStatus();
         });
     });
 
@@ -233,6 +276,7 @@
         $("#letter-card").className = "letter-card is-closed";
         $("#forgive-response").textContent = "";
         $("#forgive-response").className = "forgive-response";
+        setTheme($("#theme-input").value || "romantic");
         updatePreview();
     });
 
@@ -242,6 +286,17 @@
         void preview.offsetWidth;
         preview.classList.add("preview-pulse");
         preview.scrollIntoView({ behavior: "smooth", block: "center" });
+    });
+
+    builderForm.addEventListener("submit", (event) => {
+        if (submissionStarted) {
+            event.preventDefault();
+            return;
+        }
+        submissionStarted = true;
+        setCheck("save", "waiting");
+        setCheck("public", "waiting");
+        builderForm.querySelector(".button-submit").disabled = true;
     });
 
     $("#open-letter").addEventListener("click", () => {
@@ -260,4 +315,5 @@
     });
 
     updatePreview();
+    updateValidationStatus();
 })();

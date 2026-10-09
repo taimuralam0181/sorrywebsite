@@ -13,6 +13,8 @@ ALLOWED_VIDEO_EXTENSIONS = {".mp4", ".webm"}
 
 
 def validate_image_file(photo):
+    if not photo or not photo.name or photo.size <= 0:
+        raise forms.ValidationError("Please choose a non-empty image file.")
     extension = Path(photo.name).suffix.lower()
     if extension not in ALLOWED_IMAGE_EXTENSIONS:
         raise forms.ValidationError("Please upload a JPG, JPEG, PNG, or WEBP image.")
@@ -31,6 +33,8 @@ def validate_image_file(photo):
 
 
 def validate_video_file(video):
+    if not video or not video.name or video.size <= 0:
+        raise forms.ValidationError("Please choose a non-empty video file.")
     extension = Path(video.name).suffix.lower()
     if extension not in ALLOWED_VIDEO_EXTENSIONS:
         raise forms.ValidationError("Please upload an MP4 or WEBM video.")

@@ -43,6 +43,11 @@ body::before {
 .editor-heading > p:last-child { color: var(--builder-muted); margin: 0; font-size: .87rem; }
 .form-errors { display: grid; gap: 5px; margin-top: 18px; padding: 12px 14px; border: 1px solid rgba(255, 124, 161, .45); border-radius: 10px; color: #ffd5e3; background: rgba(164, 36, 89, .2); font-size: .72rem; }
 .form-errors strong { color: white; }
+.form-success { display: grid; gap: 4px; margin-top: 18px; padding: 12px 14px; border: 1px solid rgba(113,235,169,.5); border-radius: 10px; color: #caffdc; background: rgba(35,135,86,.18); font-size: .72rem; }
+.validation-status { margin-top: 18px; padding: 13px 15px; border: 1px solid rgba(255,255,255,.16); border-radius: 13px; background: rgba(255,255,255,.05); }
+.validation-status.status-ready { border-color: rgba(113, 235, 169, .55); }.validation-status.status-warning { border-color: rgba(255, 210, 108, .55); }.validation-status.status-error { border-color: rgba(255, 124, 161, .65); }
+.validation-status-heading { display: flex; justify-content: space-between; gap: 12px; color: white; font-size: .75rem; }.validation-status-heading span { color: var(--builder-muted); font-size: .68rem; text-align: right; }
+.validation-checks { display: grid; grid-template-columns: 1fr 1fr; gap: 5px 14px; padding: 0; margin: 11px 0 0; list-style: none; }.validation-checks li { display: flex; justify-content: space-between; gap: 8px; color: var(--builder-muted); font-size: .67rem; }.validation-checks b { color: #9ff0c1; font-size: .62rem; }.validation-checks li.is-fail b { color: #ffabc8; }.validation-checks li.is-warning b { color: #ffdc8a; }
 .control-card { padding: 25px 26px 27px; margin-bottom: 18px; border: 1px solid var(--builder-line); border-radius: 19px; background: var(--builder-panel); backdrop-filter: blur(16px); box-shadow: 0 18px 45px rgba(0, 0, 0, .16); }
 .card-heading { display: flex; gap: 16px; align-items: flex-start; margin-bottom: 22px; }
 .card-number { color: var(--builder-pink); font-size: .72rem; font-weight: 700; letter-spacing: .12em; padding-top: 3px; }

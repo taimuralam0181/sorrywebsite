@@ -21,12 +21,17 @@
     </header>
 
     <main class="builder-layout">
-        <form class="editor-panel" aria-label="Sorry page editor" method="post" enctype="multipart/form-data">
+        <form id="builder-form" class="editor-panel" aria-label="Sorry page editor" method="post" enctype="multipart/form-data">
             {% csrf_token %}
             <div class="editor-heading">
                 <p class="builder-eyebrow">Your little love letter</p>
                 <h1>Make it <em>personal.</em></h1>
                 <p>Fill in the details below and watch your page come to life.</p>
+                {% if messages %}
+                    <div class="form-success" role="status">
+                        {% for message in messages %}<span>{{ message }}</span>{% endfor %}
+                    </div>
+                {% endif %}
                 {% if form.errors %}
                     <div class="form-errors" role="alert">
                         <strong>Please check the highlighted details.</strong>
@@ -36,13 +41,24 @@
                         {% endfor %}
                     </div>
                 {% endif %}
+                <section id="validation-status" class="validation-status status-warning" aria-live="polite">
+                    <div class="validation-status-heading"><strong id="validation-status-title">🟡 CHECK REQUIRED</strong><span id="validation-status-summary">Checking your page...</span></div>
+                    <ul class="validation-checks">
+                        <li data-check="photos"><span>Photo upload</span><b>CHECKING</b></li>
+                        <li data-check="videos"><span>Video upload</span><b>CHECKING</b></li>
+                        <li data-check="preview"><span>Live preview</span><b>CHECKING</b></li>
+                        <li data-check="form"><span>Form validation</span><b>CHECKING</b></li>
+                        <li data-check="save"><span>Save operation</span><b>WAITING</b></li>
+                        <li data-check="public"><span>Public page verification</span><b>WAITING</b></li>
+                    </ul>
+                </section>
             </div>
 
             <div class="control-card">
                 <div class="card-heading"><span class="card-number">01</span><div><h2>Who are you saying Sorry to? <span>❤️</span></h2><p>Let's start with the two people who matter most.</p></div></div>
                 <div class="input-grid">
-                    <label>Her Name<input id="her-name" name="her_name" type="text" placeholder="Enter her name..." autocomplete="off" required></label>
-                    <label>Your Name<input id="your-name" name="your_name" type="text" placeholder="Enter your name..." autocomplete="off" required></label>
+                    <label>Her Name<input id="her-name" name="her_name" type="text" placeholder="Enter her name..." autocomplete="off" value="{{ form.her_name.value|default:'' }}" required></label>
+                    <label>Your Name<input id="your-name" name="your_name" type="text" placeholder="Enter your name..." autocomplete="off" value="{{ form.your_name.value|default:'' }}" required></label>
                 </div>
             </div>
 
@@ -54,19 +70,19 @@
                     <button class="theme-option" type="button" data-theme="dark"><span class="theme-swatch dark-swatch">🌙</span><span><b>Dark Love</b><small>Deep & mysterious</small></span><i>✓</i></button>
                     <button class="theme-option" type="button" data-theme="emotional"><span class="theme-swatch emotional-swatch">🥺</span><span><b>Emotional</b><small>Quiet & heartfelt</small></span><i>✓</i></button>
                 </div>
-                <input id="theme-input" name="theme" type="hidden" value="romantic">
+                <input id="theme-input" name="theme" type="hidden" value="{{ form.theme.value|default:'romantic' }}">
             </div>
 
             <div class="control-card">
                 <div class="card-heading"><span class="card-number">03</span><div><h2>Your Sorry Message <span>💌</span></h2><p>Say what is in your heart, just as you would say it to her.</p></div></div>
-                <label class="full-label">Your message<textarea id="sorry-message" name="sorry_message" rows="4" placeholder="Write something from your heart..." required>আমি জানি তুমি আমার উপর রাগ করে আছো। আমি সত্যিই sorry। 🥺❤️</textarea></label>
+                <label class="full-label">Your message<textarea id="sorry-message" name="sorry_message" rows="4" placeholder="Write something from your heart..." required>{% if form.sorry_message.value %}{{ form.sorry_message.value }}{% else %}আমি জানি তুমি আমার উপর রাগ করে আছো। আমি সত্যিই sorry। 🥺❤️{% endif %}</textarea></label>
             </div>
 
             <div class="control-card">
                 <div class="card-heading"><span class="card-number">04</span><div><h2>Write a Letter <span>💌</span></h2><p>A few more words can say everything.</p></div></div>
-                <label class="full-label">Letter title<input id="letter-title" name="letter_title" type="text" placeholder="I'm Sorry 🥺" value="I'm Sorry 🥺"></label>
-                <label class="full-label">Letter message<textarea id="letter-message" name="letter_body" rows="6" placeholder="Write your heart out..."></textarea></label>
-                <label class="full-label">Signature<input id="signature" name="signature" type="text" placeholder="— Your Name ❤️"></label>
+                <label class="full-label">Letter title<input id="letter-title" name="letter_title" type="text" placeholder="I'm Sorry 🥺" value="{% if form.letter_title.value %}{{ form.letter_title.value }}{% else %}I'm Sorry 🥺{% endif %}"></label>
+                <label class="full-label">Letter message<textarea id="letter-message" name="letter_body" rows="6" placeholder="Write your heart out...">{{ form.letter_body.value|default:'' }}</textarea></label>
+                <label class="full-label">Signature<input id="signature" name="signature" type="text" placeholder="— Your Name ❤️" value="{{ form.signature.value|default:'' }}"></label>
             </div>
 
             <div class="control-card">
@@ -77,7 +93,7 @@
                 </div>
                 <p id="photo-name" class="file-name">0 / 5 photos selected</p>
                 <div id="photo-thumbnails" class="photo-thumbnails" aria-live="polite"></div>
-                <label class="full-label media-caption-field">Photo caption<input id="photo-caption" name="photo_caption" type="text" placeholder="A moment worth remembering 📸"></label>
+                <label class="full-label media-caption-field">Photo caption<input id="photo-caption" name="photo_caption" type="text" placeholder="A moment worth remembering 📸" value="{{ form.photo_caption.value|default:'' }}"></label>
             </div>
 
             <div class="control-card">
